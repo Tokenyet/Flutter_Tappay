@@ -4,7 +4,7 @@
 
 A Flutter plugin to slove Tappay sdk. (only Direct pay and Android for now.)
 
-![demo.gif](demo/demo.gif =360x)
+<img src="demo/demo.gif" width="360">
 
 ## Usage
 To use this plugin, add `flutter_tappay` as a [dependency in your pubspec.yaml file](https://flutter.io/platform-plugins/).
