@@ -29,6 +29,24 @@ There is something that need to add before using this plugin, please follow the 
     </activity>
 ```
 
+3. Add `xmlns:tools="http://schemas.android.com/tools"` in `AndroidManifest.xml` as example:
+
+```
+  <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:tools="http://schemas.android.com/tools"
+      package="tw.idv.dowen.flutter_tappay_tester">
+```
+
+4. Add `tools:replace="android:label"` in  `AndroidManifest.xml` as example:
+
+```
+  <application
+    tools:replace="android:label"
+    android:name="io.flutter.app.FlutterApplication"
+    android:label="flutter_tappay_tester"
+    android:icon="@mipmap/ic_launcher">
+```
+
 That's it.
 
 ### Example

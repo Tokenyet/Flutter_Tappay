@@ -1,3 +1,6 @@
+## 0.1.1+2
+1. Add Steps in demo
+
 ## 0.1.1+1
 1. Fix gif demo
 
