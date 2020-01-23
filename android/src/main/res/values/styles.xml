@@ -1,0 +1,43 @@
+<resources>
+    <style name="LaunchTheme" parent="@android:style/Theme.Black.NoTitleBar">
+        <!-- Show a splash screen on the activity. Automatically removed when
+             Flutter draws its first frame -->
+        <item name="android:windowBackground">@drawable/launch_background</item>
+        <item name="android:windowFullscreen">true</item>
+    </style>
+
+    <style name="AppCompactTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    </style>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="LaunchTheme">
+        <!-- Customize your theme here. -->
+        <item type="attr" name="colorPrimary">@color/colorPrimary</item>
+        <item type="attr" name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item type="attr" name="colorAccent">@color/colorAccent</item>
+        <item type="attr" name="windowActionBar">false</item>
+        <item name="android:windowActionBar">false</item>
+    </style>
+
+    <style name="EditTextDescription">
+        <item name="android:layout_margin">@dimen/margin_small</item>
+        <item name="android:textSize">@dimen/text_size_small</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="EditTextInput">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/edittext_height_small</item>
+        <item name="android:background">@drawable/shape_rec_white_null_rounded_small</item>
+        <item name="android:layout_margin">@dimen/margin_small</item>
+        <item name="android:inputType">number</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="Response">
+        <item name="android:layout_margin">@dimen/margin_small</item>
+        <item name="android:textSize">@dimen/text_size_small</item>
+        <item name="android:textColor">@color/light_gray</item>
+    </style>
+
+</resources>
