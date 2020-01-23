@@ -19,36 +19,12 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    print("init");
-    initPlatformState();
     payer = FlutterTappay();
     payer.onTokenReceived.listen((data) {
-      print("Yo?$data Received");
       setState(() {
-        print("!!$data");
         _token = data;
       });
     }, onError: (err){ print("$err");}, onDone: (){ print("done");});
-  }
-
-  // Platform messages are asynchronous, so we initialize in an async method.
-  Future<void> initPlatformState() async {
-    String platformVersion;
-    // Platform messages may fail, so we use a try/catch PlatformException.
-    try {
-      platformVersion = await FlutterTappay.platformVersion;
-    } on PlatformException {
-      platformVersion = 'Failed to get platform version.';
-    }
-
-    // If the widget was removed from the tree while the asynchronous platform
-    // message was in flight, we want to discard the reply rather than calling
-    // setState to update our non-existent appearflutter_tappayance.
-    if (!mounted) return;
-
-    setState(() {
-      _platformVersion = platformVersion;
-    });
   }
 
   @override
@@ -61,21 +37,19 @@ class _MyAppState extends State<MyApp> {
         body: Center(
           child: Column(
             children: <Widget>[
-              Text('Running on: $_platformVersion\n'),
               Text("Token on: $_token"),
-              FlatButton(child: Text("123"), onPressed: () async {
-                print(await FlutterTappay.getPrimeToken());
-              },)
             ],
           )
         ),
         floatingActionButton: FloatingActionButton(
           child: Icon(Icons.add),
           onPressed: () async {
-            print("tap");
             await FlutterTappay.showPayment(
               title: "Custom Title",
-              btnName: "Custom BtnName"
+              btnName: "Custom BtnName",
+              appKey: "app_whdEWBH8e8Lzy4N6BysVRRMILYORF6UxXbiOFsICkz0J9j1C0JUlCHv1tVJC",
+              appId: 11334,
+              serverType: FlutterTappayServerType.Sandbox
             );
           },
         ),

@@ -44,25 +44,29 @@ class TappayActivity : AppCompatActivity(), View.OnClickListener {
     private var context: Context? = null;
     private val TAG = "TappayActivity"
 
+    companion object {
+        val INTENT_TITLE = "TITLE";
+        val INTENT_BTN_NAME = "BTN_NAME";
+        val INTENT_APP_KEY = "APP_KEY";
+        val INTENT_APP_ID = "APP_ID";
+        val INTENT_SERVER_TYPE = "SERVER_TYPE";
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        var title = getIntent().getStringExtra("TITLE")
-        var btnName = getIntent().getStringExtra("BTN_NAME")
+        var title = getIntent().getStringExtra(INTENT_TITLE)
+        var btnName = getIntent().getStringExtra(INTENT_BTN_NAME)
         setupViews(title, btnName)
         context = this
-        Toast.makeText(this, "set view", Toast.LENGTH_SHORT).show()
-        startTapPaySetting();
+
+        var appKey = getIntent().getStringExtra(INTENT_APP_KEY)
+        var appId = getIntent().getIntExtra(INTENT_APP_ID, 11334)
+        var serverType = getIntent().getStringExtra(INTENT_SERVER_TYPE)
+        startTapPaySetting(appId, appKey, serverType);
     }
 
-
-//    protected override fun onCreate(savedInstanceState: Bundle) {
-//        super.onCreate(savedInstanceState)
-//        setContentView(R.layout.activity_main)
-//        setupViews()
-//        Log.d(TAG, "SDK version is " + TPDSetup.getVersion())
-//    }
 
     private fun setupViews(title: String, btnName: String) {
         //statusTV = findViewById(R.id.statusTV) as TextView
@@ -74,18 +78,21 @@ class TappayActivity : AppCompatActivity(), View.OnClickListener {
         payBTN!!.text = btnName
     }
 
-    private fun startTapPaySetting() {
-        Log.d(TAG, "startTapPaySetting")
+    private fun startTapPaySetting(appId: Int = 11334, appKey: String = "app_whdEWBH8e8Lzy4N6BysVRRMILYORF6UxXbiOFsICkz0J9j1C0JUlCHv1tVJC", serverType: String = "sandbox") {
         //1.Setup environment.
-        TPDSetup.initInstance(getApplicationContext(),
-                Integer.parseInt(getString(R.string.global_test_app_id)), getString(R.string.global_test_app_key), TPDServerType.Sandbox)
+        if(serverType.toLowerCase() == "production") { // TPDServerType classifier, wtf is this...
+            TPDSetup.initInstance(getApplicationContext(), appId, appKey, TPDServerType.Production)
+        } else {
+            TPDSetup.initInstance(getApplicationContext(), appId, appKey, TPDServerType.Sandbox)
+        }
+
 
         //2.Setup input form
         tpdForm = findViewById(R.id.tpdCardInputForm) as TPDForm
         tpdForm!!.setTextErrorColor(Color.RED)
         tpdForm!!.setOnFormUpdateListener(object : TPDFormUpdateListener {
             override fun onFormUpdated(tpdStatus: TPDStatus) {
-                Toast.makeText(context, "status: ${tpdStatus.toString()}", Toast.LENGTH_SHORT).show()
+                //Toast.makeText(context, "status: ${tpdStatus.toString()}", Toast.LENGTH_SHORT).show()
                 tipsTV!!.text = ""
                 if (tpdStatus.getCardNumberStatus() === TPDStatus.STATUS_ERROR) {
                     tipsTV!!.text = "Invalid Card Number"
@@ -103,13 +110,8 @@ class TappayActivity : AppCompatActivity(), View.OnClickListener {
         val tpdTokenSuccessCallback = object : TPDCardTokenSuccessCallback {
             override fun onSuccess(token: String, tpdCardInfo: TPDCardInfo, cardIdentifier: String) {
                 val cardLastFour = tpdCardInfo.getLastFour()
-
-                Log.d("TPDirect createToken", "token:  $token")
-                Log.d("TPDirect createToken", "cardLastFour:  $cardLastFour")
-                Toast.makeText(context, "$token", Toast.LENGTH_LONG).show()
-                FlutterTappayPlugin.instance.token = token;
-                FlutterTappayPlugin.instance.success = true;
-                Log.d("TPDirect createToken", "cardIdentifier:  $cardIdentifier")
+                //Toast.makeText(context, "$token", Toast.LENGTH_LONG).show()
+                // Log.d("TPDirect createToken", "cardIdentifier:  $cardIdentifier")
                 var resultIntent = Intent();
                 resultIntent.putExtra("token", token);
                 setResult(Activity.RESULT_OK, resultIntent);
@@ -118,8 +120,8 @@ class TappayActivity : AppCompatActivity(), View.OnClickListener {
         }
         val tpdTokenFailureCallback = object : TPDTokenFailureCallback {
             override fun onFailure(status: Int, reportMsg: String) {
-                Toast.makeText(context, "$status $reportMsg", Toast.LENGTH_LONG).show()
-                Log.d("TPDirect createToken", "failure: $status$reportMsg")
+                //Toast.makeText(context, "$status $reportMsg", Toast.LENGTH_LONG).show()
+                //Log.d("TPDirect createToken", "failure: $status$reportMsg")
             }
         }
 
@@ -138,7 +140,7 @@ class TappayActivity : AppCompatActivity(), View.OnClickListener {
             R.id.payBTN ->
                 //4. Calling API for obtaining prime.
                 if (tpdCard != null) {
-                    Toast.makeText(context, "click", Toast.LENGTH_LONG).show()
+                    // Toast.makeText(context, "click", Toast.LENGTH_LONG).show()
                     tpdCard!!.getPrime()
                 }
         }
