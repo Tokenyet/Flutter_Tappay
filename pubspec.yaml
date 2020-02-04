@@ -1,6 +1,6 @@
 name: flutter_tappay
 description: Platform specific solution for tappay in flutter. It's still in progress. Currently for Android with Direct pay.
-version: 0.1.1+3
+version: 0.1.1+4
 repository: https://github.com/Tokenyet/Flutter_Tappay
 issue_tracker: https://github.com/Tokenyet/Flutter_Tappay/issues
 homepage: https://github.com/Tokenyet/Flutter_Tappay

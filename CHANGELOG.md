@@ -1,3 +1,6 @@
+## 0.1.1+4
+1. Add pending state to btn to prevent user from clicking multiple time
+
 ## 0.1.1+3
 1. Add error feedback to prevent activity stucks
 
