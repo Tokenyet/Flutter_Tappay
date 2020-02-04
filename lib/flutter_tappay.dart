@@ -3,10 +3,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
-enum FlutterTappayServerType {
-  Sandbox,
-  Production
-}
+enum FlutterTappayServerType { Sandbox, Production }
 
 /// A flutter resolution for Tappay user
 ///
@@ -18,23 +15,21 @@ class FlutterTappay {
 
   static FlutterTappay _instance;
   factory FlutterTappay() {
-    if(_instance == null) {
+    if (_instance == null) {
       _instance = FlutterTappay.private();
     }
     return _instance;
   }
 
   FlutterTappay.private()
-    : eventChannel = EventChannel('tokenyet.github.io/flutter_tappay_callback');
-
+      : eventChannel =
+            EventChannel('tokenyet.github.io/flutter_tappay_callback');
 
   /// Stream for listening the token from native activity
   ///
   ///  * [Documentation](https://docs.tappaysdk.com/tutorial/zh/android/front.html#tpdsetup)
   Stream<dynamic> get onTokenReceived {
-    return eventChannel
-        .receiveBroadcastStream()
-        .map((dynamic event) => event);
+    return eventChannel.receiveBroadcastStream().map((dynamic event) => event);
   }
 
   /// Show native payment to pay
@@ -46,17 +41,19 @@ class FlutterTappay {
   ///
   /// If there is a UI requirement, please fork the project and modify activity_main in layout folder
   ///  * [Documentation](https://docs.tappaysdk.com/tutorial/zh/android/front.html#tpdsetup)
-  static Future<void> showPayment({
-    int appId,
-    String appKey,
-    FlutterTappayServerType serverType,
-    String title,
-    String btnName,
-    int androidReqCode = 8787
-  }) async { // This might be constructed to delayed method, so onTokenReceived could be marked as deprecated in the future
+  static Future<void> showPayment(
+      {int appId,
+      String appKey,
+      FlutterTappayServerType serverType,
+      String title,
+      String btnName,
+      String pendingBtnName,
+      int androidReqCode = 8787}) async {
+    // This might be constructed to delayed method, so onTokenReceived could be marked as deprecated in the future
     await _channel.invokeMethod('showPayment', <String, String>{
       "title": title,
       "btnName": btnName,
+      "pendingBtnName": pendingBtnName,
       "appId": appId.toString(),
       "appKey": appKey,
       "serverType": describeEnum(serverType),

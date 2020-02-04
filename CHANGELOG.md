@@ -1,3 +1,6 @@
+## 0.1.1+3
+1. Add error feedback to prevent activity stucks
+
 ## 0.1.1+2
 1. Add Steps in demo
 

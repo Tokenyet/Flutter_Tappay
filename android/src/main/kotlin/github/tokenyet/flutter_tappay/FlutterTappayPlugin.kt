@@ -42,6 +42,7 @@ public class FlutterTappayPlugin : FlutterPlugin, StreamHandler, MethodCallHandl
         val EVENT_CHANNEL_NAME = "tokenyet.github.io/flutter_tappay_callback"
         val DEFUALT_TITLE = "Tappay Example Title"
         val DEFAULT_BTN_NAME = "Pay"
+        val DEFAULT_PENDING_BTN_NAME = "Paying..."
         val SYSTEM_DEFAULT_APP_ID = 11334
         val SYSTEM_DEFAULT_APP_KEY = "app_whdEWBH8e8Lzy4N6BysVRRMILYORF6UxXbiOFsICkz0J9j1C0JUlCHv1tVJC"
         val SYSTEM_DEFAULT_SERVER_TYPE = "sandbox"
@@ -73,12 +74,14 @@ public class FlutterTappayPlugin : FlutterPlugin, StreamHandler, MethodCallHandl
             var intent = Intent(applicationContext, TappayActivity::class.java)
             var title = call.argument<String>("title")
             var btnName = call.argument<String>("btnName")
+            var pendingBtnName = call.argument<String>("pendingBtnName")
             var appKey = call.argument<String>("appKey")
             var appId = call.argument<String>("appId")
             var serverType = call.argument<String>("serverType")
             var reqCode = call.argument<String>("androidRequestCode")
             intent.putExtra(TappayActivity.INTENT_TITLE, if (title != null) title else DEFUALT_TITLE)
             intent.putExtra(TappayActivity.INTENT_BTN_NAME, if (btnName != null) btnName else DEFAULT_BTN_NAME)
+            intent.putExtra(TappayActivity.INTENT_PENDING_BTN_NAME, if (pendingBtnName != null) pendingBtnName else DEFAULT_PENDING_BTN_NAME)
             intent.putExtra(TappayActivity.INTENT_APP_ID, if (appId != null) appId.toInt() else SYSTEM_DEFAULT_APP_ID)
             intent.putExtra(TappayActivity.INTENT_APP_KEY, if (appId != null) appKey else SYSTEM_DEFAULT_APP_KEY)
             intent.putExtra(TappayActivity.INTENT_SERVER_TYPE, if (appId != null) serverType else SYSTEM_DEFAULT_SERVER_TYPE)
@@ -113,7 +116,13 @@ public class FlutterTappayPlugin : FlutterPlugin, StreamHandler, MethodCallHandl
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?): Boolean {
         if(requestCode == this.requestCode) {
-            eventSink?.success(data?.getStringExtra("token"))
+            if(data?.hasExtra("token") == true) {
+                eventSink?.success(data?.getStringExtra("token"))
+            } else if(data?.hasExtra("error") == true){
+                eventSink?.error(data?.getStringExtra("error"), null, null);
+            } else {
+                eventSink?.error("Unexpected Error", null, null);
+            }
             return true
         }
         return false

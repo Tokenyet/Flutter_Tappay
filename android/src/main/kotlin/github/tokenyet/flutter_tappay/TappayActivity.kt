@@ -41,12 +41,15 @@ class TappayActivity : AppCompatActivity(), View.OnClickListener {
     private var tpdCard: TPDCard? = null
     //private var statusTV: TextView? = null
     //private var getFraudIdBTN: Button? = null
-    private var context: Context? = null;
+    private var context: Context? = null
     private val TAG = "TappayActivity"
+    private var pendingName: String? = null
+    private var btnName: String? = null
 
     companion object {
         val INTENT_TITLE = "TITLE";
         val INTENT_BTN_NAME = "BTN_NAME";
+        val INTENT_PENDING_BTN_NAME = "PENDING_BTN_NAME";
         val INTENT_APP_KEY = "APP_KEY";
         val INTENT_APP_ID = "APP_ID";
         val INTENT_SERVER_TYPE = "SERVER_TYPE";
@@ -58,7 +61,10 @@ class TappayActivity : AppCompatActivity(), View.OnClickListener {
         setContentView(R.layout.activity_main)
         var title = getIntent().getStringExtra(INTENT_TITLE)
         var btnName = getIntent().getStringExtra(INTENT_BTN_NAME)
+        var pendingBtnName = getIntent().getStringExtra(INTENT_PENDING_BTN_NAME)
         setupViews(title, btnName)
+        this.pendingName = pendingBtnName
+        this.btnName = btnName
         context = this
 
         var appKey = getIntent().getStringExtra(INTENT_APP_KEY)
@@ -74,8 +80,9 @@ class TappayActivity : AppCompatActivity(), View.OnClickListener {
         payBTN = findViewById(R.id.payBTN) as Button
         payBTN!!.setOnClickListener(this)
         payBTN!!.isEnabled = false
-        setTitle(title)
         payBTN!!.text = btnName
+        setTitle(title)
+        //setPayBtn(true)
     }
 
     private fun startTapPaySetting(appId: Int = 11334, appKey: String = "app_whdEWBH8e8Lzy4N6BysVRRMILYORF6UxXbiOFsICkz0J9j1C0JUlCHv1tVJC", serverType: String = "sandbox") {
@@ -112,6 +119,8 @@ class TappayActivity : AppCompatActivity(), View.OnClickListener {
                 val cardLastFour = tpdCardInfo.getLastFour()
                 //Toast.makeText(context, "$token", Toast.LENGTH_LONG).show()
                 // Log.d("TPDirect createToken", "cardIdentifier:  $cardIdentifier")
+                //payBTN!!.isEnabled = true
+                setPayBtn(false)
                 var resultIntent = Intent();
                 resultIntent.putExtra("token", token);
                 setResult(Activity.RESULT_OK, resultIntent);
@@ -122,6 +131,13 @@ class TappayActivity : AppCompatActivity(), View.OnClickListener {
             override fun onFailure(status: Int, reportMsg: String) {
                 //Toast.makeText(context, "$status $reportMsg", Toast.LENGTH_LONG).show()
                 //Log.d("TPDirect createToken", "failure: $status$reportMsg")
+                //payBTN!!.isEnabled = true
+                setPayBtn(false)
+                Log.d("TPDirect createToken", "failure: $status$reportMsg")
+                var resultIntent = Intent();
+                resultIntent.putExtra("error", "$status|$reportMsg");
+                setResult(Activity.RESULT_OK, resultIntent);
+                finish()
             }
         }
 
@@ -137,13 +153,26 @@ class TappayActivity : AppCompatActivity(), View.OnClickListener {
 
     override fun onClick(view: View) {
         when (view.id) {
-            R.id.payBTN ->
+            R.id.payBTN -> run {
+                //payBTN!!.isEnabled = false // prevent user from thinking the btn not works
+                setPayBtn(true)
                 //4. Calling API for obtaining prime.
                 if (tpdCard != null) {
                     // Toast.makeText(context, "click", Toast.LENGTH_LONG).show()
                     tpdCard!!.getPrime()
                 }
+            }
         }
+    }
 
+    fun setPayBtn(pending: Boolean) {
+        if(pending) {
+            payBTN!!.text = pendingName
+            payBTN!!.isEnabled = false
+        }
+        else {
+            payBTN!!.text = btnName
+            payBTN!!.isEnabled = true
+        }
     }
 }

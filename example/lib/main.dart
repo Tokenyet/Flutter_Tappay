@@ -47,6 +47,7 @@ class _MyAppState extends State<MyApp> {
             await FlutterTappay.showPayment(
               title: "Custom Title",
               btnName: "Custom BtnName",
+              pendingBtnName: "Custom Pending...",
               appKey: "app_whdEWBH8e8Lzy4N6BysVRRMILYORF6UxXbiOFsICkz0J9j1C0JUlCHv1tVJC",
               appId: 11334,
               serverType: FlutterTappayServerType.Sandbox
