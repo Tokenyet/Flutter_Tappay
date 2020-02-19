@@ -42,9 +42,10 @@ android {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation fileTree(dir: 'libs', include: ['*.aar'])
+    implementation fileTree(include: ['*.aar'], dir: 'libs')
     def appcompat_version = "1.2.0-alpha01"
     api "androidx.appcompat:appcompat:$appcompat_version"
     api "androidx.appcompat:appcompat-resources:$appcompat_version"
     // api (name: 'tpdirect', ext: 'aar')
+    compileOnly files('tmplibs/flutter.jar')
 }

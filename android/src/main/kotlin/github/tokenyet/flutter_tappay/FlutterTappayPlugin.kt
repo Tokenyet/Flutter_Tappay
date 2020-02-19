@@ -21,7 +21,14 @@ import android.os.Handler
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.plugin.common.PluginRegistry.ActivityResultListener;
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
-
+import tech.cherri.tpdirect.api.TPDCard
+import tech.cherri.tpdirect.api.TPDCardInfo
+import tech.cherri.tpdirect.api.TPDServerType
+import tech.cherri.tpdirect.api.TPDSetup
+import tech.cherri.tpdirect.callback.TPDTokenFailureCallback
+import tech.cherri.tpdirect.callback.TPDTokenSuccessCallback
+import java.util.*
+import kotlin.collections.HashMap
 
 
 /** FlutterTappayPlugin */
@@ -35,6 +42,9 @@ public class FlutterTappayPlugin : FlutterPlugin, StreamHandler, MethodCallHandl
     private var eventSink: EventChannel.EventSink? = null
     private var token: String? = null // lastest token
     private var requestCode: Int = 8787
+
+    // Direct way to use tappay
+    //private var
 
     companion object {
         val instance = FlutterTappayPlugin()
@@ -66,6 +76,10 @@ public class FlutterTappayPlugin : FlutterPlugin, StreamHandler, MethodCallHandl
         methodChannel = null
         eventChannel = null
     }
+
+    private var _appkey = null;
+    private var _appId = null;
+    private var _serverType = null;
 
     override fun onMethodCall(call: MethodCall, result: Result) {
         if (call.method == "getPlatformVersion") {
@@ -101,6 +115,81 @@ public class FlutterTappayPlugin : FlutterPlugin, StreamHandler, MethodCallHandl
                 result.success(token)
             else
                 result.error("No token hooked", null, null)
+        } else if(call.method == "init"){ // another way to use directpay
+            var appKey = call.argument<String>("appKey")
+            var appId = call.argument<String>("appId")
+            var serverType = call.argument<String>("serverType")
+
+            try {
+                TPDSetup.initInstance(
+                    this.applicationContext,
+                    appId!!.toInt(),
+                    appKey,
+                    if (serverType!!.toLowerCase() == "sandbox") TPDServerType.Sandbox else TPDServerType.Production
+                )
+                return result.success("SUCCESS")
+            } catch (err: Exception) {
+                return result.error("Tappay", "error", err)
+            }
+
+        } else if(call.method == "validate") { // return object// boolean
+            var cardNumber = call.argument<String>("cardNumber")
+            var dueMonth = call.argument<String>("dueMonth")
+            var dueYear = call.argument<String>("dueYear")
+            var ccv = call.argument<String>("ccv")
+            var validResult = TPDCard.validate(
+                StringBuffer().append(cardNumber),
+                StringBuffer().append(dueMonth),
+                StringBuffer().append(dueYear),
+                StringBuffer().append(ccv)
+            )
+
+            var map = HashMap<String, String>()
+            map.put("isCardNumberValid", if(validResult.isCardNumberValid) "1" else "0")
+            map.put("isExpiryDateValid", if(validResult.isExpiryDateValid) "1" else "0")
+            map.put("isCCVValid", if(validResult.isCCVValid) "1" else "0")
+            map.put("cardType", validResult.cardType.name)
+            return result.success(map);
+//            var card = TPDCard(
+//                this.applicationContext,
+//                "cardNumber",
+//                "dueMonth",
+//                "dueYear",
+//                "CCV"
+//            );
+        } else if(call.method == "sendToken"){ // return a Map with 3 value
+            var cardNumber = call.argument<String>("cardNumber")
+            var dueMonth = call.argument<String>("dueMonth")
+            var dueYear = call.argument<String>("dueYear")
+            var ccv = call.argument<String>("ccv")
+            var card = TPDCard(this.applicationContext,
+                StringBuffer().append(cardNumber),
+                StringBuffer().append(dueMonth),
+                StringBuffer().append(dueYear),
+                StringBuffer().append(ccv)
+            )
+                .onSuccessCallback { prime: String, cardInfo: TPDCardInfo, cardIdentifier: String -> run {
+                        var cardInfoMap = HashMap<String, String>()
+                        cardInfoMap.put("bincode", cardInfo.bincode)
+                        cardInfoMap.put("lastFour", cardInfo.lastFour)
+                        cardInfoMap.put("issuer", cardInfo.issuer)
+                        cardInfoMap.put("funding", cardInfo.funding.toString())
+                        cardInfoMap.put("cardType", cardInfo.cardType.toString())
+                        cardInfoMap.put("level", cardInfo.level)
+                        cardInfoMap.put("country", cardInfo.country)
+                        cardInfoMap.put("countryCode", cardInfo.countryCode)
+                        var pack = HashMap<String, Any>()
+                        pack.put("prime", prime)
+                        pack.put("cardInfoMap", cardInfoMap)
+                        pack.put("cardIdentifier", cardIdentifier)
+                        result.success(pack)
+                    }
+                }
+                .onFailureCallback { status: Int, reportMsg: String -> run {
+                        result.error("$status", "$reportMsg", null)
+                    }
+                };
+            card.createToken("UNKNOWN");
         } else {
             result.notImplemented()
         }

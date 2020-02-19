@@ -3,6 +3,8 @@ import 'dart:async';
 
 import 'package:flutter/services.dart';
 import 'package:flutter_tappay/flutter_tappay.dart';
+import 'package:flutter_tappay_example/tappay_android_way.dart';
+import 'package:flutter_tappay_example/tappay_flutter_way.dart';
 
 void main() => runApp(MyApp());
 
@@ -12,48 +14,58 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String _platformVersion = 'Unknown';
-  String _token;
-  FlutterTappay payer;
-
   @override
   void initState() {
     super.initState();
-    payer = FlutterTappay();
-    payer.onTokenReceived.listen((data) {
-      setState(() {
-        _token = data;
-      });
-    }, onError: (err){ print("$err");}, onDone: (){ print("done");});
   }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Plugin example app'),
-        ),
-        body: Center(
+      home: HomePage()
+    );
+  }
+}
+
+class HomePage extends StatefulWidget {
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Plugin example app'),
+      ),
+      body: Center(
           child: Column(
             children: <Widget>[
-              Text("Token on: $_token"),
+              FlatButton(
+                child: Text("Android way"),
+                onPressed: (){
+                  Navigator.of(context).push(
+                      new MaterialPageRoute(
+                          builder: (context) {
+                            return TappayAndroidScreen();
+                          }
+                      ));
+                },
+              ),
+              FlatButton(
+                child: Text("Flutter way"),
+                onPressed: (){
+                  Navigator.of(context).push(
+                      new MaterialPageRoute(
+                          builder: (context) {
+                            return TappayFlutterScreen();
+                          }
+                      ));
+                },
+              )
             ],
           )
-        ),
-        floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.add),
-          onPressed: () async {
-            await FlutterTappay.showPayment(
-              title: "Custom Title",
-              btnName: "Custom BtnName",
-              pendingBtnName: "Custom Pending...",
-              appKey: "app_whdEWBH8e8Lzy4N6BysVRRMILYORF6UxXbiOFsICkz0J9j1C0JUlCHv1tVJC",
-              appId: 11334,
-              serverType: FlutterTappayServerType.Sandbox
-            );
-          },
-        ),
       ),
     );
   }
