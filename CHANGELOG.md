@@ -1,3 +1,6 @@
+## 0.2.0
+1. Add form unrelated method, so flutter use could use own UI system!!
+
 ## 0.1.1+4
 1. Add pending state to btn to prevent user from clicking multiple time
 

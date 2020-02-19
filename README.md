@@ -4,6 +4,7 @@
 
 A Flutter plugin to slove Tappay sdk. (only Direct pay and Android for now.)
 
+<img src="https://i.imgur.com/RBqy65x.gif" width="360">
 <img src="https://i.imgur.com/rh6FbxD.gif" width="360">
 
 ## Usage
@@ -51,6 +52,76 @@ That's it.
 
 ### Example
 
+#### Flutter way(recommended):
+```
+// Import package
+import 'package:flutter_tappay/flutter_tappay.dart';
+
+// Instantiate it
+FlutterTappay payer = FlutterTappay ();
+payer.init(
+    appKey: "app_whdEWBH8e8Lzy4N6BysVRRMILYORF6UxXbiOFsICkz0J9j1C0JUlCHv1tVJC",
+    appId: 11334,
+    serverType: FlutterTappayServerType.Sandbox
+).then((_){
+  setState(() {
+    prepared = true;
+  });
+});
+
+// Valid with your TextFormField (see example)
+payer.validate(
+        cardNumber: _cardNumber.text,
+        dueMonth: _cardMonth.text,
+        dueYear: _cardYear.text,
+        ccv: _cardCCV.text,
+      ).then((validationResult) {
+        bool cardValid = validationResult.isCardNumberValid;
+        bool dateValid = validationResult.isExpiryDateValid;
+        bool ccvValid = validationResult.isCCVValid;
+        _totalValid = cardValid && ccvValid && dateValid;
+        if(cardValid == true)
+          _isCardNumberValid = true;
+        else
+          _isCardNumberValid = _cardNumber.text != "" ? false : true;
+        if(ccvValid == true)
+          _isCardCCVValid = true;
+        else
+          _isCardCCVValid = _cardCCV.text != "" ? false : true;
+        if(dateValid == true) {
+          _isCardYearValid = true;
+          _isCardMonthValid = true;
+        } else {
+          _isCardYearValid = _cardYear.text != "" ? false : true;
+          _isCardMonthValid = _cardMonth.text != "" ? false : true;
+        }
+
+        setState(() {
+        });
+      });
+
+// get token
+  try {
+    TappayTokenResponse response = await payer.sendToken(
+      cardNumber: _cardNumber.text,
+      dueYear: _cardYear.text,
+      dueMonth: _cardMonth.text,
+      ccv: _cardCCV.text,
+    );
+    setState(() {
+      _token = response.prime;
+    });
+  } catch(err) {
+    Scaffold.of(context).showSnackBar(
+        SnackBar(
+            content: Text("Payment error: ${err.toString()}")
+        )
+    );
+  }
+```
+
+#### Platform-Native way:
+
 ``` dart
 // Import package
 import 'package:flutter_tappay/flutter_tappay.dart';
@@ -82,4 +153,6 @@ If you are using DirectPay only. The oher options might be just call API directl
 
 
 ## Contribution
-Again, If you are better on Android, fork and pull request to improve the layout! If you will add more feature on FlutterTappay, Add in example and gif It in PR :)
+1. Android native way could have better UI, but I'm bad at Android layout, Welcome to make it better.
+2. iOS need to be done.
+3. Should add more support on Google/Samsung/Apple pay to both platform, currently, only DirectPay.

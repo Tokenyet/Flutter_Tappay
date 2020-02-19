@@ -134,7 +134,6 @@ class _TappayFlutterScreenState extends State<TappayFlutterScreen> {
           return FloatingActionButton(
             child: Icon(Icons.send),
             onPressed: !_totalValid ? null : () async {
-              print("Try Token");
               try {
                 TappayTokenResponse response = await payer.sendToken(
                   cardNumber: _cardNumber.text,
