@@ -11,15 +11,15 @@ class TappayValidation {
   final bool isExpiryDateValid;
   final bool isCCVValid;
   final TappayCardValidType cardType;
-  TappayValidation({
-    this.isCardNumberValid,
-    this.isExpiryDateValid,
-    this.isCCVValid,
-    this.cardType
-  });
+  TappayValidation(
+      {this.isCardNumberValid,
+      this.isExpiryDateValid,
+      this.isCCVValid,
+      this.cardType});
 }
 
-enum TappayCardValidType { // Documentation cheat me with string value
+enum TappayCardValidType {
+  // Documentation cheat me with string value
 //  CARD_TYPE_VISA,
 //  CARD_TYPE_MASTERCARD,
 //  CARD_TYPE_JCB,
@@ -38,13 +38,7 @@ enum CardDetailFundingType {
   prepaid,
 }
 
-enum CardDetailCardType {
-  visa,
-  mastercard,
-  jcb,
-  union,
-  amex
-}
+enum CardDetailCardType { visa, mastercard, jcb, union, amex }
 
 @immutable
 class TappayTokenResponseCardDetail {
@@ -145,9 +139,9 @@ class FlutterTappay {
   /// Use programmatically way to init, can't be used with Android way.
   ///
   Future<void> init({
-        int appId,
-        String appKey,
-        FlutterTappayServerType serverType,
+    int appId,
+    String appKey,
+    FlutterTappayServerType serverType,
   }) async {
     // This might be constructed to delayed method, so onTokenReceived could be marked as deprecated in the future
     await _channel.invokeMethod('init', <String, String>{
@@ -160,14 +154,11 @@ class FlutterTappay {
   ///
   /// Use programmatically way to valid card infos, can't be used with Android way.
   ///
-  Future<TappayValidation> validate({
-    String cardNumber,
-    String dueMonth,
-    String dueYear,
-    String ccv
-  }) async {
+  Future<TappayValidation> validate(
+      {String cardNumber, String dueMonth, String dueYear, String ccv}) async {
     // This might be constructed to delayed method, so onTokenReceived could be marked as deprecated in the future
-    Map<dynamic, dynamic> datas = await _channel.invokeMethod<Map<dynamic, dynamic>>('validate', <String, String>{
+    Map<dynamic, dynamic> datas = await _channel
+        .invokeMethod<Map<dynamic, dynamic>>('validate', <String, String>{
       "cardNumber": cardNumber,
       "dueMonth": dueMonth,
       "dueYear": dueYear,
@@ -180,8 +171,10 @@ class FlutterTappay {
       isExpiryDateValid: data["isExpiryDateValid"] == "1",
       isCCVValid: data["isCCVValid"] == "1",
       cardType: TappayCardValidType.values.firstWhere((value) {
-        print("${describeEnum(value).toLowerCase() } vs ${data["cardType"].toLowerCase()}");
-        return describeEnum(value).toLowerCase() == data["cardType"].toLowerCase();
+        print(
+            "${describeEnum(value).toLowerCase()} vs ${data["cardType"].toLowerCase()}");
+        return describeEnum(value).toLowerCase() ==
+            data["cardType"].toLowerCase();
       }, orElse: () => null),
     );
   }
@@ -190,14 +183,11 @@ class FlutterTappay {
   /// Use programmatically way to get card prime, can't be used with Android way.
   /// Must catch error If there is any.
   ///
-  Future<TappayTokenResponse> sendToken({
-    String cardNumber,
-    String dueMonth,
-    String dueYear,
-    String ccv
-  }) async {
+  Future<TappayTokenResponse> sendToken(
+      {String cardNumber, String dueMonth, String dueYear, String ccv}) async {
     // This might be constructed to delayed method, so onTokenReceived could be marked as deprecated in the future
-    Map<dynamic, dynamic> datas = await _channel.invokeMethod<Map<dynamic, dynamic>>('sendToken', <String, String>{
+    Map<dynamic, dynamic> datas = await _channel
+        .invokeMethod<Map<dynamic, dynamic>>('sendToken', <String, String>{
       "cardNumber": cardNumber,
       "dueMonth": dueMonth,
       "dueYear": dueYear,
@@ -209,8 +199,10 @@ class FlutterTappay {
       bincode: data["cardInfoMap"]["bincode"],
       lastFour: data["cardInfoMap"]["lastFour"],
       issuer: data["cardInfoMap"]["issuer"],
-      funding: CardDetailFundingType.values[int.parse(data["cardInfoMap"]["funding"])],
-      cardType: CardDetailCardType.values[int.parse(data["cardInfoMap"]["cardType"]) - 1],
+      funding: CardDetailFundingType
+          .values[int.parse(data["cardInfoMap"]["funding"])],
+      cardType: CardDetailCardType
+          .values[int.parse(data["cardInfoMap"]["cardType"]) - 1],
       level: data["cardInfoMap"]["level"],
       country: data["cardInfoMap"]["country"],
       countryCode: data["cardInfoMap"]["countryCode"],
@@ -218,9 +210,8 @@ class FlutterTappay {
 
     return new TappayTokenResponse(
       prime: datas["prime"],
-      cardInfo:  detail,
+      cardInfo: detail,
       cardIdentifier: datas["cardIdentifier"],
     );
   }
 }
-
