@@ -30,7 +30,8 @@ flutter:
       android:
         package: github.tokenyet.flutter_tappay
         pluginClass: FlutterTappayPlugin
-
+      ios:
+        pluginClass: FlutterTappayPlugin
   # To add assets to your plugin package, add an assets section, like this:
   # assets:
   #  - images/a_dot_burr.jpeg
