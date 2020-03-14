@@ -2,7 +2,7 @@
 
 [![pub package](https://img.shields.io/pub/v/flutter_tappay.svg)](https://pub.dartlang.org/packages/flutter_tappay)
 
-A Flutter plugin to slove Tappay sdk. (only Direct pay and Android for now.)
+A Flutter plugin to slove Tappay sdk. (only Direct pay for now.)
 
 <img src="https://i.imgur.com/RBqy65x.gif" width="360">
 <img src="https://i.imgur.com/rh6FbxD.gif" width="360">
@@ -147,12 +147,11 @@ await FlutterTappay.showPayment(
 ```
 
 ## More Info
-It's really frustrated for flutter users to use ugly UI with native Android, If you are good at Android, please feel free to customize `layout/activity_main.xml` to make It more beauty, Moreover, pull request is welcome!
+It's really frustrated for flutter users to use ugly UI with native Android/iOS, If you are good at Android/iOS, please feel free to customize `layout/activity_main.xml` to make It more beauty, Moreover, pull request is welcome!
 
 If you are using DirectPay only. The oher options might be just call API directly, since there is no rules for Tappay to prevent this happened, but this package is target to intergation with native method, that provided by [official documentation](https://docs.tappaysdk.com/tutorial/zh/android/front.html#tpdsetup).
 
 
 ## Contribution
 1. Android native way could have better UI, but I'm bad at Android layout, Welcome to make it better.
-2. iOS need to be done.
 3. Should add more support on Google/Samsung/Apple pay to both platform, currently, only DirectPay.

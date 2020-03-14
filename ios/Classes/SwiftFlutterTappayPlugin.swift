@@ -93,17 +93,11 @@ public class SwiftFlutterTappayPlugin: 	NSObject, FlutterPlugin, FlutterStreamHa
           let appKey = myArgs["appKey"] as? String,
           let appId = myArgs["appId"] as? String,
           let serverType = myArgs["serverType"] as? String {
-//            TPDSetup.setWithAppId(
-//                Int32(appId)!,
-//                withAppKey: appKey,
-//                with: serverType.lowercased() == "production" ? TPDServerType.production : TPDServerType.sandBox
-//            )
-            TPDSetup.setWithAppId(
-                13873,
-                withAppKey: "app_CBd97FKObDXQc40tbVMoGwu1BzTmPUBtCKMfzlSk2maiGb0GKUaKP7CCNTph",
-                with: TPDServerType.sandBox
-            )
-            
+           TPDSetup.setWithAppId(
+               Int32(appId)!,
+               withAppKey: appKey,
+               with: serverType.lowercased() == "production" ? TPDServerType.production : TPDServerType.sandBox
+           )
             
             TPDSetup.shareInstance().serverSync()
             return result("SUCCESS")

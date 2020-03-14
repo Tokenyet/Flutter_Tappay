@@ -43,7 +43,7 @@ class _HomePageState extends State<HomePage> {
           child: Column(
             children: <Widget>[
               FlatButton(
-                child: Text("Android way"),
+                child: Text("Native way"),
                 onPressed: (){
                   Navigator.of(context).push(
                       new MaterialPageRoute(

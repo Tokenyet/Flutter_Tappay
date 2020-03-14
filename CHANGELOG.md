@@ -1,3 +1,6 @@
+## 0.3.0
+1. Add iOS support to tappay
+
 ## 0.2.0
 1. Add form unrelated method, so flutter use could use own UI system!!
 
