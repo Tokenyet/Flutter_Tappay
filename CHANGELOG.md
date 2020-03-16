@@ -1,3 +1,6 @@
+## 0.3.0+1
+1. Remove dependency for flutter.jar, prevent comiple error from various version.
+
 ## 0.3.0
 1. Add iOS support to tappay
 
