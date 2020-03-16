@@ -47,5 +47,5 @@ dependencies {
     api "androidx.appcompat:appcompat:$appcompat_version"
     api "androidx.appcompat:appcompat-resources:$appcompat_version"
     // api (name: 'tpdirect', ext: 'aar')
-    compileOnly files('tmplibs/flutter.jar')
+    // compileOnly files('tmplibs/flutter.jar')
 }
