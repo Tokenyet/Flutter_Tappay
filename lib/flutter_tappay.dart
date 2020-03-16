@@ -171,8 +171,6 @@ class FlutterTappay {
       isExpiryDateValid: data["isExpiryDateValid"] == "1",
       isCCVValid: data["isCCVValid"] == "1",
       cardType: TappayCardValidType.values.firstWhere((value) {
-        print(
-            "${describeEnum(value).toLowerCase()} vs ${data["cardType"].toLowerCase()}");
         return describeEnum(value).toLowerCase() ==
             data["cardType"].toLowerCase();
       }, orElse: () => null),
